@@ -138,7 +138,7 @@ function civicrm_api3_job_copydbtotest($params) {
   // disable Scheduled Jobs
   // disable all Scheduled Jobs that send mail
   $except = ['Samedate', 'LinkDonorGroup', 'Gendata', 'Cron', 'cleanup', 'fetch_bounces'];
-  // fetch_bounces ???,  process_respondent ???, send_reminder staat aan op test ???, process_sms staat aan op test ???
+  // fetch_bounces staat aan op test ???, send_reminder staat aan op test ???, process_sms staat aan op test ???
   //$disable = ['mail_report', 'process_pledge', 'process_respondent', 'process_mailing', 'send_reminder', 'process_sms'];
   $disable = ['mail_report', 'process_pledge', 'process_respondent', 'process_mailing'];
   
