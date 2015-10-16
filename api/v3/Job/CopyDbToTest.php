@@ -65,6 +65,8 @@ function civicrm_api3_job_copydbtotest($params) {
   }
   var_dump($result);
   
+  mysql_close($link);
+  
   // backup database in /var/tmp 
   if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql') or  0 >= filesize('/var/tmp/maf-live_civicrm_copytotest.sql')){
     $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
@@ -174,10 +176,10 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
   }
   var_dump($result);
+  
+  mysql_close($link);
     
-  if($return['is_error']){
-    $return['error_message'] = implode(', ', $return['error_message']);
-  }
+  
   
   // connect to drupal database
   if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
@@ -212,16 +214,11 @@ function civicrm_api3_job_copydbtotest($params) {
     var_dump($result);
   }
   
-  /*ob_start();
-  // define static var
-  //define('DRUPAL_ROOT', getcwd());
-  // include bootstrap
-  include_once('/home/maf/www/test/includes/includes/bootstrap.inc');
-  // initialize stuff
-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-  // clear cache
-  drupal_flush_all_caches();
-  ob_end_clean();*/
+  mysql_close($link);
+    
+  if($return['is_error']){
+    $return['error_message'] = implode(', ', $return['error_message']);
+  }
   
   return $return;
 }
