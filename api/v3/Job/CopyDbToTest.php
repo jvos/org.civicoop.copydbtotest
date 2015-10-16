@@ -1,4 +1,5 @@
 <?php
+set_time_limit(0);
 
 /**
  * Job.CopyDbToTest API specification (optional)
@@ -199,11 +200,16 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);
   
   // clear cache
-  /*ob_start();
-  require_once '/home/maf/www/test/includes/bootstrap.inc';
+  ob_start();
+  // define static var
+  //define('DRUPAL_ROOT', getcwd());
+  // include bootstrap
+  include_once('/home/maf/www/test/includes/includes/bootstrap.inc');
+  // initialize stuff
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  // clear cache
   drupal_flush_all_caches();
-  ob_end_clean();*/
+  ob_end_clean();
   
   return $return;
 }
