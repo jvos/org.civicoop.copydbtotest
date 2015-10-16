@@ -23,17 +23,6 @@ function _civicrm_api3_job_copydbtotest_spec(&$spec) {
  */
 function civicrm_api3_job_copydbtotest($params) {  
   $return['is_error'] = false;
-
-  // enable maintenance mode
-  $cmd = sprintf("%s/%s %d", '/home/maf/www/test', 'drush vset --yes maintenance_mode', 1);
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  exec($cmd, $output, $return_var);
-  
-  echo('$output:<pre>');
-  print_r($output);
-  echo('</pre>');
-  
-  echo('$return_var: ' . $return_var) . PHP_EOL;
   
   // fetch settings from the live database  
   //echo('constant("CIVICRM_DSN"): ' . constant("CIVICRM_DSN")) . PHP_EOL;
@@ -54,11 +43,33 @@ function civicrm_api3_job_copydbtotest($params) {
   print_r($db);
   echo('</pre>');*/
   
+  
+  // connect to drupal database
+  if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
+    $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
+    $return['is_error'] = true;
+    return $return;
+  } 
+  elseif(!mysql_select_db('maf-test_drupal', $link)) { 
+    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
+    $return['is_error'] = true;
+    return $return;
+  }
+    
+  // enable maintenance mode
+  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize('1'));
+  echo('$query: ' . $query) . PHP_EOL;
+  if(!$result = mysql_query($query, $link)){
+    $return['error_message'][] = sprintf('Cannot set maintenance mode, error mysql_query %s', mysql_error($link));
+    $return['is_error'] = true;
+  }
+  var_dump($result);
+  
   // backup database in /var/tmp 
   $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
 
-  //echo('$cmd: ' . $cmd) . PHP_EOL;
+  echo('$cmd: ' . $cmd) . PHP_EOL;
   //exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
@@ -71,7 +82,7 @@ function civicrm_api3_job_copydbtotest($params) {
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'maf-test_civicrm', 'maf-live_civicrm');
 
-  //echo('$cmd: ' . $cmd) . PHP_EOL;
+  echo('$cmd: ' . $cmd) . PHP_EOL;
   //exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
@@ -166,27 +177,31 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'] = implode(', ', $return['error_message']);
   }
   
+  // connect to drupal database
+  if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
+    $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
+    $return['is_error'] = true;
+    return $return;
+  } 
+  elseif(!mysql_select_db('maf-test_drupal', $link)) { 
+    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
+    $return['is_error'] = true;
+    return $return;
+  }
+    
   // disable maintenance mode
-  /*$cmd = sprintf("%s/%s %d", '/home/maf/www/test', 'drush vset --yes maintenance_mode', 0);
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  exec($cmd, $output, $return_var);
-  
-  echo('$output:<pre>');
-  print_r($output);
-  echo('</pre>');
-  
-  echo('$return_var: ' . $return_var) . PHP_EOL;*/
+  /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize('0'));
+  echo('$query: ' . $query) . PHP_EOL;
+  if(!$result = mysql_query($query, $link)){
+    $return['error_message'][] = sprintf('Cannot set maintenance mode, error mysql_query %s', mysql_error($link));
+    $return['is_error'] = true;
+  }
+  var_dump($result);*/
   
   // clear cache
-  $cmd = sprintf("%s/%s -y", '/home/maf/www/test', 'drush cc all');
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  exec($cmd, $output, $return_var);
-  
-  echo('$output:<pre>');
-  print_r($output);
-  echo('</pre>');
-  
-  echo('$return_var: ' . $return_var) . PHP_EOL;
+  require_once '/home/maf/www/test/includes/bootstrap.inc';
+  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+  drupal_flush_all_caches();
   
   return $return;
 }
