@@ -199,11 +199,11 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);*/
   
   // clear cache
-  ob_start();
+  /*ob_start();
   require_once '/home/maf/www/test/includes/bootstrap.inc';
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   drupal_flush_all_caches();
-  ob_end_clean();
+  ob_end_clean();*/
   
   return $return;
 }
