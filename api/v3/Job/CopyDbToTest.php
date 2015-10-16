@@ -80,7 +80,6 @@ function civicrm_api3_job_copydbtotest($params) {
     echo('$return_var: ' . $return_var) . PHP_EOL;
   }
   
-  
   // restore database in /var/tmp
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   echo('$cmd: ' . $cmd) . PHP_EOL;
