@@ -67,8 +67,10 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);
   
   // backup database in /var/tmp 
-  $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
-  $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
+  if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql') or  0 >= filesize('/var/tmp/maf-live_civicrm_copytotest.sql')){
+    $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
+    $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
+  }
 
   //echo('$cmd: ' . $cmd) . PHP_EOL;
   exec($cmd, $output, $return_var);
@@ -172,7 +174,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'][] = sprintf('Cannot update Scheduled Jobs, error mysql_query %s', mysql_error($link));
     $return['is_error'] = true;
   }
-  //var_dump($result);
+  var_dump($result);
     
   if($return['is_error']){
     $return['error_message'] = implode(', ', $return['error_message']);
@@ -200,7 +202,18 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);
   
   // clear cache
-  ob_start();
+  $cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update'];
+  foreach($cache_tables as $table){
+    $query = sprintf("DELETE FROM `maf-test_drupal`.%s WHERE cid <> ''", $table);
+    echo('$query: ' . $query) . PHP_EOL;
+    if(!$result = mysql_query($query, $link)){
+      $return['error_message'][] = sprintf('Cannot set clear cache table %s, error mysql_query %s', $table, mysql_error($link));
+      $return['is_error'] = true;
+    }
+    var_dump($result);
+  }
+  
+  /*ob_start();
   // define static var
   //define('DRUPAL_ROOT', getcwd());
   // include bootstrap
@@ -209,7 +222,7 @@ function civicrm_api3_job_copydbtotest($params) {
   drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
   // clear cache
   drupal_flush_all_caches();
-  ob_end_clean();
+  ob_end_clean();*/
   
   return $return;
 }
