@@ -1,8 +1,7 @@
 <?php
-set_time_limit(0);
 
 /**
- * Job.CopyDbToTest API specification (optional)
+ * Job.Copydbtotest API specification (optional)
  * This is used for documentation and validation.
  *
  * @param array $spec description of fields supported by this API call
@@ -10,11 +9,10 @@ set_time_limit(0);
  * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
  */
 function _civicrm_api3_job_copydbtotest_spec(&$spec) {
-  
 }
 
 /**
- * Job.CopyDbToTest API
+ * Job.Copydbtotest API
  *
  * @param array $params
  * @return array API result descriptor
@@ -22,8 +20,8 @@ function _civicrm_api3_job_copydbtotest_spec(&$spec) {
  * @see civicrm_api3_create_error
  * @throws API_Exception
  */
-function civicrm_api3_job_copydbtotest($params) {  
-  $return['is_error'] = false;
+function civicrm_api3_job_copydbtotest($params) {
+    $return['is_error'] = false;
   
   // fetch settings from the live database  
   //echo('constant("CIVICRM_DSN"): ' . constant("CIVICRM_DSN")) . PHP_EOL;
@@ -109,7 +107,7 @@ function civicrm_api3_job_copydbtotest($params) {
   }
     
   // change extensionsDir
-  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'extensionsDir'", serialize('/var/www/html/maf-test/sites/default/civicrm_extensions'));
+  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'extensionsDir'", serialize('/home/maf/www/test/sites/default/civicrm_extensions'));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot update Settings, error mysql_query %s', mysql_error($link));
@@ -203,7 +201,7 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);
   
   // clear cache
-  $cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update'];
+  $cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update', 'drupal_cache_views', 'drupal_cache_views_data'];
   foreach($cache_tables as $table){
     $query = sprintf("DELETE FROM `maf-test_drupal`.%s WHERE cid <> ''", $table);
     echo('$query: ' . $query) . PHP_EOL;
