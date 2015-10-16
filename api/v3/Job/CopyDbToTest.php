@@ -57,7 +57,7 @@ function civicrm_api3_job_copydbtotest($params) {
   }
     
   // enable maintenance mode
-  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize('1'));
+  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot set maintenance mode, error mysql_query %s', mysql_error($link));
