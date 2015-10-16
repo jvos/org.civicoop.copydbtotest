@@ -50,15 +50,15 @@ function civicrm_api3_job_copydbtotest($params) {
     'database' => 'maf-test_civicrm',
   ];
   
-  echo('$db:<pre>');
+  /*echo('$db:<pre>');
   print_r($db);
-  echo('</pre>');
+  echo('</pre>');*/
   
   // backup database in /var/tmp 
   $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
 
-  echo('$cmd: ' . $cmd) . PHP_EOL;
+  //echo('$cmd: ' . $cmd) . PHP_EOL;
   //exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
@@ -71,7 +71,7 @@ function civicrm_api3_job_copydbtotest($params) {
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'maf-test_civicrm', 'maf-live_civicrm');
 
-  echo('$cmd: ' . $cmd) . PHP_EOL;
+  //echo('$cmd: ' . $cmd) . PHP_EOL;
   //exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
@@ -93,7 +93,7 @@ function civicrm_api3_job_copydbtotest($params) {
     return $return;
   }
     
-  // change customTemplateDir, customPHPPathDir and extensionsDir
+  // change extensionsDir
   $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'extensionsDir'", serialize('/var/www/html/maf-test/sites/default/civicrm_extensions'));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
@@ -176,6 +176,17 @@ function civicrm_api3_job_copydbtotest($params) {
   echo('</pre>');
   
   echo('$return_var: ' . $return_var) . PHP_EOL;*/
+  
+  // clear cache
+  $cmd = sprintf("%s/%s -y", '/home/maf/www/test', 'drush cc all');
+  echo('$cmd: ' . $cmd) . PHP_EOL;
+  exec($cmd, $output, $return_var);
+  
+  echo('$output:<pre>');
+  print_r($output);
+  echo('</pre>');
+  
+  echo('$return_var: ' . $return_var) . PHP_EOL;
   
   return $return;
 }
