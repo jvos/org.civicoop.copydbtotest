@@ -69,8 +69,8 @@ function civicrm_api3_job_copydbtotest($params) {
   $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
 
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  //exec($cmd, $output, $return_var);
+  //echo('$cmd: ' . $cmd) . PHP_EOL;
+  exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
   print_r($output);
@@ -82,8 +82,8 @@ function civicrm_api3_job_copydbtotest($params) {
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'maf-test_civicrm', 'maf-live_civicrm');
 
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  //exec($cmd, $output, $return_var);
+  //echo('$cmd: ' . $cmd) . PHP_EOL;
+  exec($cmd, $output, $return_var);
   
   echo('$output:<pre>');
   print_r($output);
@@ -190,13 +190,13 @@ function civicrm_api3_job_copydbtotest($params) {
   }
     
   // disable maintenance mode
-  /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize('0'));
+  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize('0'));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot set maintenance mode, error mysql_query %s', mysql_error($link));
     $return['is_error'] = true;
   }
-  var_dump($result);*/
+  var_dump($result);
   
   // clear cache
   /*ob_start();
