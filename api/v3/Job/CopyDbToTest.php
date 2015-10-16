@@ -68,7 +68,7 @@ function civicrm_api3_job_copydbtotest($params) {
   mysql_close($link);
   
   // backup database in /var/tmp 
-  if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql') or  0 >= filesize('/var/tmp/maf-live_civicrm_copytotest.sql')){
+  if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
     $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
     echo('$cmd: ' . $cmd) . PHP_EOL;
     $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
