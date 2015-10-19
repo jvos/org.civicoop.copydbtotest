@@ -219,6 +219,20 @@ function civicrm_api3_job_copydbtotest($params) {
   }*/
   
   mysql_close($link);
+  
+  // connect to drupal database
+  if(!$link = mysql_connect($db['live']['host'], $db['live']['username'], $db['live']['password'])) { 
+    $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
+    $return['is_error'] = true;
+    mysql_close($link);
+    return $return;
+  } 
+  elseif(!mysql_select_db('maf-live_civicrm', $link)) { 
+    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
+    $return['is_error'] = true;
+    mysql_close($link);
+    return $return;
+  }
     
   if($return['is_error']){
     $return['error_message'] = implode(', ', $return['error_message']);
