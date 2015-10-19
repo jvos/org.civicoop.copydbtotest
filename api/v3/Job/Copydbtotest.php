@@ -1,8 +1,6 @@
 <?php
-set_time_limit(0);
-ini_set('max_execution_time', 0);
-ini_set('max_input_time', -1);
 ini_set('display_errors', 1);
+set_time_limit(0);
 
 /**
  * Job.Copydbtotest API specification (optional)
