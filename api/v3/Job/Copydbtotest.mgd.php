@@ -11,7 +11,7 @@ return array (
     'params' => 
     array (
       'version' => 3,
-      'name' => 'Call Job.Copydbtotest API',
+      'name' => 'Copy live civicrm database to test',
       'description' => 'Copy the maf-live_civicrm database to the maf-test_civicrm and change a couple settings.',
       'run_frequency' => 'Daily',
       'api_entity' => 'Job',

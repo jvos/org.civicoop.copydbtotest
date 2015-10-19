@@ -21,7 +21,7 @@ function _civicrm_api3_job_copydbtotest_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_job_copydbtotest($params) {
-    $return['is_error'] = false;
+  $return['is_error'] = false;
   
   // fetch settings from the live database  
   //echo('constant("CIVICRM_DSN"): ' . constant("CIVICRM_DSN")) . PHP_EOL;
@@ -35,7 +35,7 @@ function civicrm_api3_job_copydbtotest($params) {
     'username' => $db['live']['username'],
     'password' => $db['live']['password'],
     'host' => $db['live']['host'],
-    'database' => 'maf-test_civicrm',
+    'database' => 'copytotest-test_civicrm',
   ];
   
   /*echo('$db:<pre>');
@@ -65,7 +65,14 @@ function civicrm_api3_job_copydbtotest($params) {
   
   mysql_close($link);
   
-  civicrm_api3_job_copydbtotest_flush();
+  echo str_pad("",1024," "); //BROWSER TWEAKS
+  echo " <br />"; //BROWSER TWEAKS
+  
+  ob_end_flush();
+  ob_flush(); 
+  flush();
+  
+  sleep(5);
   
   // backup database in /var/tmp 
   if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
@@ -87,7 +94,7 @@ function civicrm_api3_job_copydbtotest($params) {
   // restore database in /var/tmp
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   echo('$cmd: ' . $cmd) . PHP_EOL;
-  $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'maf-test_civicrm', 'maf-live_civicrm');
+  $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'copytotest-test_civicrm', 'maf-live_civicrm');
 
   //echo('$cmd: ' . $cmd) . PHP_EOL;
   exec($cmd, $output, $return_var);
@@ -106,14 +113,14 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     return $return;
   } 
-  elseif(!mysql_select_db('maf-test_civicrm', $link)) { 
-    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_civicrm', mysql_error($link));
+  elseif(!mysql_select_db('copytotest-test_civicrm', $link)) { 
+    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'copytotest-test_civicrm', mysql_error($link));
     $return['is_error'] = true;
     return $return;
   }
     
   // change extensionsDir
-  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'extensionsDir'", serialize('/home/maf/www/test/sites/default/civicrm_extensions'));
+  $query = sprintf("UPDATE `copytotest-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'extensionsDir'", serialize('/home/maf/www/test/sites/default/civicrm_extensions'));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot update Settings, error mysql_query %s', mysql_error($link));
@@ -124,7 +131,7 @@ function civicrm_api3_job_copydbtotest($params) {
   
   // change Outbound Mail
   // first get the outbaoun mail setting and set outBound_option to 5 (Redirect to Database)
-  $query = sprintf("SELECT value FROM `maf-test_civicrm`.civicrm_setting WHERE name = 'mailing_backend'");
+  $query = sprintf("SELECT value FROM `copytotest-test_civicrm`.civicrm_setting WHERE name = 'mailing_backend'");
   echo('$query: ' . $query) . PHP_EOL;
   
   $result = mysql_query($query, $link);
@@ -148,7 +155,7 @@ function civicrm_api3_job_copydbtotest($params) {
   print_r($value);
   echo('</pre>');
   
-  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'mailing_backend'", serialize($value));
+  $query = sprintf("UPDATE `copytotest-test_civicrm`.civicrm_setting SET value = '%s' WHERE name = 'mailing_backend'", serialize($value));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot update Outbound Mail, error mysql_query %s', mysql_error($link));
@@ -159,7 +166,7 @@ function civicrm_api3_job_copydbtotest($params) {
   
   // change SMS Provider
   // change te API URl to a none exsisting
-  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_sms_provider SET username = 'a', password = 'a', api_url = 'a'");
+  $query = sprintf("UPDATE `copytotest-test_civicrm`.civicrm_sms_provider SET username = 'a', password = 'a', api_url = 'a'");
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot update SMS Provider, error mysql_query %s', mysql_error($link));
@@ -176,7 +183,7 @@ function civicrm_api3_job_copydbtotest($params) {
   $disable = ['mail_report', 'process_pledge', 'process_respondent', 'process_mailing'];
   
   $where = "api_action = '" . implode("' OR api_action = '", $disable) . "'";
-  $query = sprintf("UPDATE `maf-test_civicrm`.civicrm_job SET is_active = '0' WHERE %s", $where);
+  $query = sprintf("UPDATE `copytotest-test_civicrm`.civicrm_job SET is_active = '0' WHERE %s", $where);
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot update Scheduled Jobs, error mysql_query %s', mysql_error($link));
@@ -235,8 +242,9 @@ function civicrm_api3_job_copydbtotest_flush(){
   echo str_pad("",1024," "); //BROWSER TWEAKS
   echo " <br />"; //BROWSER TWEAKS
   
+  ob_end_flush();
   ob_flush(); 
   flush();
   
-  sleep(1);
+  sleep(5);
 }
