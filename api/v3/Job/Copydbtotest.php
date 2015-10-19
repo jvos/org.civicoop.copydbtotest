@@ -79,7 +79,7 @@ function civicrm_api3_job_copydbtotest($params) {
     echo('</pre>');
     echo('$return_var: ' . $return_var) . PHP_EOL;
     
-    civicrm_api3_job_copydbtotest_flush();
+    // civicrm_api3_job_copydbtotest_flush();
   }
   
   // restore database in /var/tmp
@@ -95,7 +95,7 @@ function civicrm_api3_job_copydbtotest($params) {
   echo('</pre>');
   echo('$return_var: ' . $return_var) . PHP_EOL;
   
-  civicrm_api3_job_copydbtotest_flush();
+  // civicrm_api3_job_copydbtotest_flush();
   
   // change civicrm settings
   // connect to database
@@ -118,7 +118,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
   }
   var_dump($result);
-  civicrm_api3_job_copydbtotest_flush();
+  // civicrm_api3_job_copydbtotest_flush();
   
   // change Outbound Mail
   // first get the outbaoun mail setting and set outBound_option to 5 (Redirect to Database)
@@ -153,7 +153,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
   }
   var_dump($result);
-  civicrm_api3_job_copydbtotest_flush();
+  // civicrm_api3_job_copydbtotest_flush();
   
   // change SMS Provider
   // change te API URl to a none exsisting
@@ -164,7 +164,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
   }
   var_dump($result);
-  civicrm_api3_job_copydbtotest_flush();
+  // civicrm_api3_job_copydbtotest_flush();
   
   // disable Scheduled Jobs
   // disable all Scheduled Jobs that send mail
@@ -183,7 +183,7 @@ function civicrm_api3_job_copydbtotest($params) {
   var_dump($result);
   
   mysql_close($link);
-  civicrm_api3_job_copydbtotest_flush();  
+  // civicrm_api3_job_copydbtotest_flush();  
   
   // connect to drupal database
   if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
@@ -205,7 +205,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
   }
   var_dump($result);*/
-  civicrm_api3_job_copydbtotest_flush();
+  // civicrm_api3_job_copydbtotest_flush();
   
   // clear cache
   /*$cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update', 'drupal_cache_views', 'drupal_cache_views_data'];
@@ -217,7 +217,7 @@ function civicrm_api3_job_copydbtotest($params) {
       $return['is_error'] = true;
     }
     var_dump($result);
-    civicrm_api3_job_copydbtotest_flush();
+    // civicrm_api3_job_copydbtotest_flush();
   }*/
   
   mysql_close($link);
