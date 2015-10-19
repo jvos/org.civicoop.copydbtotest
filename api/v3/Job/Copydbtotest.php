@@ -55,24 +55,15 @@ function civicrm_api3_job_copydbtotest($params) {
   }
     
   // enable maintenance mode
-  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
+  /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot enable maintenance mode, error mysql_query %s', mysql_error($link));
     $return['is_error'] = true;
   }
-  var_dump($result);
+  var_dump($result);*/
   
   mysql_close($link);
-  
-  echo str_pad("",1024," "); //BROWSER TWEAKS
-  echo " <br />"; //BROWSER TWEAKS
-  
-  ob_end_flush();
-  ob_flush(); 
-  flush();
-  
-  sleep(5);
   
   // backup database in /var/tmp 
   if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
@@ -207,17 +198,17 @@ function civicrm_api3_job_copydbtotest($params) {
   }
     
   // disable maintenance mode
-  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(0));
+  /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(0));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot disable maintenance mode, error mysql_query %s', mysql_error($link));
     $return['is_error'] = true;
   }
-  var_dump($result);
+  var_dump($result);*/
   civicrm_api3_job_copydbtotest_flush();
   
   // clear cache
-  $cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update', 'drupal_cache_views', 'drupal_cache_views_data'];
+  /*$cache_tables = ['drupal_cache', 'drupal_cache_block', 'drupal_cache_bootstrap', 'drupal_cache_field', 'drupal_cache_filter', 'drupal_cache_form', 'drupal_cache_image', 'drupal_cache_menu', 'drupal_cache_page', 'drupal_cache_path', 'drupal_cache_rules', 'drupal_cache_token', 'drupal_cache_update', 'drupal_cache_views', 'drupal_cache_views_data'];
   foreach($cache_tables as $table){
     $query = sprintf("DELETE FROM `maf-test_drupal`.%s WHERE cid <> ''", $table);
     echo('$query: ' . $query) . PHP_EOL;
@@ -227,7 +218,7 @@ function civicrm_api3_job_copydbtotest($params) {
     }
     var_dump($result);
     civicrm_api3_job_copydbtotest_flush();
-  }
+  }*/
   
   mysql_close($link);
     
