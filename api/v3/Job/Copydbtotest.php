@@ -2,6 +2,7 @@
 ini_set('display_errors', 1);
 set_time_limit(0);   
 ini_set('mysql.connect_timeout','0');   
+ini_set('default_socket_timeout','0');   
 ini_set('max_execution_time', '0');
 
 /**
@@ -60,26 +61,60 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     mysql_close($link);
     return $return;
-  }*/
+  }
     
   // enable maintenance mode
-  /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
+  $query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
   echo('$query: ' . $query) . PHP_EOL;
   if(!$result = mysql_query($query, $link)){
     $return['error_message'][] = sprintf('Cannot enable maintenance mode, error mysql_query %s', mysql_error($link));
     $return['is_error'] = true;
   }
-  var_dump($result);*/
+  var_dump($result);
   
-  //mysql_close($link);
+  mysql_close($link);*/
   
-  // backup database in /var/tmp 
-  if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
-    $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
+  // copy live database to test
+  // connect to live database
+  if(!$link = mysql_connect($db['live']['host'], $db['live']['username'], $db['live']['password'])) { 
+    $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
+    $return['is_error'] = true;
+    mysql_close($link);
+    return $return;
+  } 
+  elseif(!mysql_select_db('maf-live_civicrm', $link)) { 
+    $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
+    $return['is_error'] = true;
+    mysql_close($link);
+    return $return;
+  }
+  
+  // get all tables
+  $query = sprintf("SHOW TABLES");
+  echo('$query: ' . $query) . PHP_EOL;
+  if(!$result = mysql_query($query, $link)){
+    $return['error_message'][] = sprintf('Cannot get tables from live, error mysql_query %s', mysql_error($link));
+    $return['is_error'] = true;
+    mysql_close($link);
+    return $return;
+  }
+  var_dump($result);
+  
+  $tables = [];
+  while($row = mysql_fetch_row($result)) {
+    /*echo('<pre>');
+    print_r($row);
+    echo('</pre>');*/
+    
+    echo('$row[0]: ' . $row[0]) . PHP_EOL;
+    watchdog('debug', '$row[0]: ' . $row[0]);
+    
+    // backup database in /var/tmp 
+    $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s %s > %s_copytotest.sql';
     echo('$cmd: ' . $cmd) . PHP_EOL;
     watchdog('debug', '$cmd: ' . $cmd);
-    $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
-    
+    $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', $row[0], 'maf-live_civicrm');
+
     //echo('$cmd: ' . $cmd) . PHP_EOL;
     exec($cmd, $output, $return_var);
 
@@ -89,27 +124,27 @@ function civicrm_api3_job_copydbtotest($params) {
     watchdog('debug', '$output:<pre>'. print_r($output, TRUE) .'</pre>');
     echo('$return_var: ' . $return_var) . PHP_EOL;
     watchdog('debug', '$return_var: ' . $return_var);
-  }
-  
-  // restore database in /var/tmp
-  $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
-  echo('$cmd: ' . $cmd) . PHP_EOL;
-  watchdog('debug', '$cmd: ' . $cmd);
-  $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'copytotest-test_civicrm', 'maf-live_civicrm');
+    
+    // restore database in /var/tmp
+    $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
+    echo('$cmd: ' . $cmd) . PHP_EOL;
+    watchdog('debug', '$cmd: ' . $cmd);
+    $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'copytotest-test_civicrm', 'maf-live_civicrm');
 
-  //echo('$cmd: ' . $cmd) . PHP_EOL;
-  exec($cmd, $output, $return_var);
-  
-  echo('$output:<pre>');
-  print_r($output);
-  echo('</pre>');
-  watchdog('debug', '$output:<pre>'. print_r($output, TRUE) .'</pre>');
-  echo('$return_var: ' . $return_var) . PHP_EOL;
-  watchdog('debug', '$return_var: ' . $return_var);
+    //echo('$cmd: ' . $cmd) . PHP_EOL;
+    exec($cmd, $output, $return_var);
+
+    echo('$output:<pre>');
+    print_r($output);
+    echo('</pre>');
+    watchdog('debug', '$output:<pre>'. print_r($output, TRUE) .'</pre>');
+    echo('$return_var: ' . $return_var) . PHP_EOL;
+    watchdog('debug', '$return_var: ' . $return_var);
+  } 
   
   // change civicrm settings
   // connect to database
-  /*if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
+  if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
@@ -204,7 +239,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     mysql_close($link); 
     return $return;
-  }*/
+  }
     
   // disable maintenance mode
   /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(0));
@@ -241,11 +276,11 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     mysql_close($link);
     return $return;
-  }
+  }*/
     
   if($return['is_error']){
     $return['error_message'] = implode(', ', $return['error_message']);
-  }*/
+  }
   
   return $return;
 }
