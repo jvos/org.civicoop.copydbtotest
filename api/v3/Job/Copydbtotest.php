@@ -23,6 +23,8 @@ function _civicrm_api3_job_copydbtotest_spec(&$spec) {
  * @throws API_Exception
  */
 function civicrm_api3_job_copydbtotest($params) {
+  watchdog('debug', 'civicrm_api3_job_copydbtotest');
+  
   $return['is_error'] = false;
   
   // fetch settings from the live database  
@@ -73,6 +75,7 @@ function civicrm_api3_job_copydbtotest($params) {
   if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
     $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s > %s_copytotest.sql';
     echo('$cmd: ' . $cmd) . PHP_EOL;
+    watchdog('debug', '$cmd: ' . $cmd);
     $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', 'maf-live_civicrm');
     
     //echo('$cmd: ' . $cmd) . PHP_EOL;
@@ -81,12 +84,15 @@ function civicrm_api3_job_copydbtotest($params) {
     echo('$output:<pre>');
     print_r($output);
     echo('</pre>');
+    watchdog('debug', '$output:<pre>'. print_r($output, TRUE) .'</pre>');
     echo('$return_var: ' . $return_var) . PHP_EOL;
+    watchdog('debug', '$return_var: ' . $return_var);
   }
   
   // restore database in /var/tmp
   $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest.sql';
   echo('$cmd: ' . $cmd) . PHP_EOL;
+  watchdog('debug', '$cmd: ' . $cmd);
   $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], 'copytotest-test_civicrm', 'maf-live_civicrm');
 
   //echo('$cmd: ' . $cmd) . PHP_EOL;
@@ -95,7 +101,9 @@ function civicrm_api3_job_copydbtotest($params) {
   echo('$output:<pre>');
   print_r($output);
   echo('</pre>');
+  watchdog('debug', '$output:<pre>'. print_r($output, TRUE) .'</pre>');
   echo('$return_var: ' . $return_var) . PHP_EOL;
+  watchdog('debug', '$return_var: ' . $return_var);
   
   // change civicrm settings
   // connect to database
