@@ -45,7 +45,7 @@ function civicrm_api3_job_copydbtotest($params) {
   echo('</pre>');*/
   
   // connect to drupal database
-  if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
+  /*if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
@@ -56,7 +56,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     mysql_close($link);
     return $return;
-  }
+  }*/
     
   // enable maintenance mode
   /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(1));
@@ -67,7 +67,7 @@ function civicrm_api3_job_copydbtotest($params) {
   }
   var_dump($result);*/
   
-  mysql_close($link);
+  //mysql_close($link);
   
   // backup database in /var/tmp 
   if(!file_exists('/var/tmp/maf-live_civicrm_copytotest.sql')){
@@ -99,7 +99,7 @@ function civicrm_api3_job_copydbtotest($params) {
   
   // change civicrm settings
   // connect to database
-  if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
+  /*if(!$link = mysql_connect($db['test']['host'], $db['test']['username'], $db['test']['password'])) { 
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
@@ -194,7 +194,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['is_error'] = true;
     mysql_close($link); 
     return $return;
-  }
+  }*/
     
   // disable maintenance mode
   /*$query = sprintf("UPDATE `maf-test_drupal`.drupal_variable SET value = '%s' WHERE name = 'maintenance_mode'", serialize(0));
@@ -217,10 +217,10 @@ function civicrm_api3_job_copydbtotest($params) {
     var_dump($result);
   }*/
   
-  mysql_close($link);
+  //mysql_close($link);
   
   // connect to drupal database
-  if(!$link = mysql_connect($db['live']['host'], $db['live']['username'], $db['live']['password'])) { 
+  /*if(!$link = mysql_connect($db['live']['host'], $db['live']['username'], $db['live']['password'])) { 
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
@@ -235,7 +235,7 @@ function civicrm_api3_job_copydbtotest($params) {
     
   if($return['is_error']){
     $return['error_message'] = implode(', ', $return['error_message']);
-  }
+  }*/
   
   return $return;
 }
