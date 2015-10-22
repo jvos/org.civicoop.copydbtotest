@@ -94,7 +94,7 @@ function civicrm_api3_job_copydbtotest($params) {
     // backup database in /var/tmp 
     // consulted with Matthijs, he must back up each time all over again
     //if(!file_exists(sprintf('/var/tmp/%s_copytotest_%s.sql', 'maf-live_civicrm_bak', $row[0]))){ // 
-      $cmd = 'cd /var/tmp && mysqldump -u %s -p%s %s %s > %s_copytotest_%s.sql';
+      $cmd = 'cd /var/tmp/maf-live_civicrm_bak_copytotest && mysqldump -u %s -p%s %s %s > %s_copytotest_%s.sql';
       $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', $row[0], 'maf-live_civicrm_bak', $row[0]);
       exec($cmd, $output, $return_var);
       
@@ -103,7 +103,7 @@ function civicrm_api3_job_copydbtotest($params) {
     //}
     
     // restore database in /var/tmp
-    $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest_%s.sql';
+    $cmd = 'cd /var/tmp/maf-live_civicrm_bak_copytotest && mysql -u %s -p%s %s < %s_copytotest_%s.sql';
     $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], $db['test']['database'], 'maf-live_civicrm_bak', $row[0]);
     exec($cmd, $output, $return_var);
     
