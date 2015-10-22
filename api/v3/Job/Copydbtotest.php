@@ -101,7 +101,9 @@ function civicrm_api3_job_copydbtotest($params) {
       exec($cmd, $output, $return_var);
       
       //var_dump($output);
-      //var_dump($return_var);
+      if(!$return_var){
+        
+      }
     //}
     
     // restore database in /var/tmp
@@ -111,6 +113,9 @@ function civicrm_api3_job_copydbtotest($params) {
     
     //var_dump($output);
     //var_dump($return_var);
+    if(!$return_var){
+        
+    }
   } 
   
   // change civicrm settings
