@@ -232,4 +232,5 @@ function civicrm_api3_job_copydbtotest($params) {
   }
   
   return civicrm_api3_create_success($return);
+  exit();
 }
