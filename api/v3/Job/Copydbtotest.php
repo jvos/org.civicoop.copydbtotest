@@ -233,6 +233,7 @@ function civicrm_api3_job_copydbtotest($params) {
     return civicrm_api3_create_error($return);
   }
   
-  return civicrm_api3_create_success($return);
+  //return civicrm_api3_create_success($return);
+  CRM_Utils_System::civiExit();
   exit();
 }
