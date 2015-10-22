@@ -38,7 +38,7 @@ function civicrm_api3_job_copydbtotest($params) {
     'username' => $db['live']['username'],
     'password' => $db['live']['password'],
     'host' => $db['live']['host'],
-    'database' => 'maf-test_civcirm',
+    'database' => 'maf-test_civicrm',
   ];
     
   // connect to drupal database
@@ -102,6 +102,9 @@ function civicrm_api3_job_copydbtotest($params) {
     $cmd = 'cd /var/tmp && mysql -u %s -p%s %s < %s_copytotest_%s.sql';
     $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], $db['test']['database'], 'maf-live_civicrm_bak', $row[0]);
     exec($cmd, $output, $return_var);
+    
+    var_dump($output);
+    var_dump($return_var);
   } 
   
   // change civicrm settings
