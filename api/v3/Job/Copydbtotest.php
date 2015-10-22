@@ -91,6 +91,8 @@ function civicrm_api3_job_copydbtotest($params) {
   $tables = [];
   while($row = mysql_fetch_row($result)) {  
     
+    echo('Copy table: ' . $row[0]) . PHP_EOL;
+    
     // backup database in /var/tmp 
     // consulted with Matthijs, he must back up each time all over again
     //if(!file_exists(sprintf('/var/tmp/%s_copytotest_%s.sql', 'maf-live_civicrm_bak', $row[0]))){ // 
@@ -99,7 +101,7 @@ function civicrm_api3_job_copydbtotest($params) {
       exec($cmd, $output, $return_var);
       
       //var_dump($output);
-      var_dump($return_var);
+      //var_dump($return_var);
     //}
     
     // restore database in /var/tmp
@@ -108,7 +110,7 @@ function civicrm_api3_job_copydbtotest($params) {
     exec($cmd, $output, $return_var);
     
     //var_dump($output);
-    var_dump($return_var);
+    //var_dump($return_var);
   } 
   
   // change civicrm settings
