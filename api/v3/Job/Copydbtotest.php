@@ -46,13 +46,13 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   } 
   elseif(!mysql_select_db('maf-test_drupal', $link)) { 
     $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   }
     
   // enable maintenance mode
@@ -70,13 +70,13 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   } 
   elseif(!mysql_select_db($db['live']['database'], $link)) { 
     $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', $db['live']['database'], mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   }
   
   // get all tables
@@ -85,7 +85,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'][] = sprintf('Cannot get tables from database %s, error mysql_query %s', $db['live']['database'], mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   }
   
   $tables = [];
@@ -117,13 +117,13 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'] = sprintf('Cannot connect (mysql), error mysql_connect %s', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   } 
   elseif(!mysql_select_db($db['test']['database'], $link)) { 
     $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', $db['test']['database'], mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link);
-    return $return;
+    return civicrm_api3_create_error($return);
   }
     
   // change extensionsDir
@@ -190,7 +190,7 @@ function civicrm_api3_job_copydbtotest($params) {
     $return['error_message'] = sprintf('Cannot select database (mysql), database %s, error mysql_select_db %s', 'maf-test_drupal', mysql_error($link));
     $return['is_error'] = true;
     mysql_close($link); 
-    return $return;
+    return civicrm_api3_create_error($return);
   }
     
   // disable maintenance mode
