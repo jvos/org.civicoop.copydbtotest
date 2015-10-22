@@ -100,10 +100,8 @@ function civicrm_api3_job_copydbtotest($params) {
       $cmd = sprintf($cmd, $db['live']['username'], $db['live']['password'], 'maf-live_civicrm', $row[0], 'maf-live_civicrm_bak', $row[0]);
       exec($cmd, $output, $return_var);
       
-      //var_dump($output);
-      if(!$return_var){
-        
-      }
+      var_dump($output);
+      var_dump($return_var);
     //}
     
     // restore database in /var/tmp
@@ -111,11 +109,8 @@ function civicrm_api3_job_copydbtotest($params) {
     $cmd = sprintf($cmd, $db['test']['username'], $db['test']['password'], $db['test']['database'], 'maf-live_civicrm_bak', $row[0]);
     exec($cmd, $output, $return_var);
     
-    //var_dump($output);
-    //var_dump($return_var);
-    if(!$return_var){
-        
-    }
+    var_dump($output);
+    var_dump($return_var);
   } 
   
   // change civicrm settings
