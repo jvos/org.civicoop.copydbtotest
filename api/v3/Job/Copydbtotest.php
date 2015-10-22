@@ -214,7 +214,8 @@ function civicrm_api3_job_copydbtotest($params) {
     
   if($return['is_error']){
     $return['error_message'] = implode(', ', $return['error_message']);
+    return civicrm_api3_create_error($return);
   }
   
-  return $return;
+  return civicrm_api3_create_success($return);
 }
